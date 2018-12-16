@@ -1,0 +1,54 @@
+package codesquad.web;
+
+import codesquad.CannotDeleteException;
+import codesquad.UnAuthenticationException;
+import codesquad.UnAuthorizedException;
+import codesquad.domain.Question;
+import codesquad.domain.User;
+import codesquad.domain.UserRepository;
+import codesquad.security.LoginUser;
+import codesquad.service.QnaService;
+import codesquad.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+@RequestMapping("/questions")
+public class QuestionController {
+
+    @Autowired
+    public UserService userService;
+
+    @Autowired
+    private QnaService qnaService;
+
+    @GetMapping("/form")
+    public String question(@LoginUser User user) {
+        return "qna/form";
+    }
+
+    @GetMapping("/{id}")
+    public String questionShow(@PathVariable long id, Model model) {
+        model.addAttribute("question", qnaService.findById(id).orElseThrow(UnAuthorizedException::new));
+        return "qna/show";
+    }
+
+    @PostMapping("")
+    public String createQuestin(@LoginUser User user, String title, String contents) {
+        qnaService.create(user, new Question(title, contents));
+        return "redirect:/";
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(@LoginUser User user, @PathVariable long id) {
+        try {
+            qnaService.deleteQuestion(user, id);
+            return "redirect:/";
+        } catch (CannotDeleteException e) {
+            e.printStackTrace();
+            return String.format("redirect:/questions/%d", id);
+        }
+    }
+}

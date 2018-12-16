@@ -4,6 +4,8 @@ import codesquad.UnAuthenticationException;
 import codesquad.UnAuthorizedException;
 import codesquad.domain.User;
 import codesquad.domain.UserRepository;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,10 +13,14 @@ import javax.annotation.Resource;
 import javax.naming.AuthenticationException;
 import java.util.List;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Service("userService")
 public class UserService {
+    private static final Logger log = getLogger(UserService.class);
     @Resource(name = "userRepository")
     private UserRepository userRepository;
+
 
     public User add(User user) {
         return userRepository.save(user);
@@ -28,6 +34,7 @@ public class UserService {
     }
 
     public User findById(User loginUser, long id) {
+        System.out.println("니미 좆또 왜 안되?");
         return userRepository.findById(id)
                 .filter(user -> user.equals(loginUser))
                 .orElseThrow(UnAuthorizedException::new);

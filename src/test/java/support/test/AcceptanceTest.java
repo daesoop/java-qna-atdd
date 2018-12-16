@@ -1,4 +1,4 @@
-package support.test;
+ package support.test;
 
 import codesquad.domain.User;
 import codesquad.domain.UserRepository;
