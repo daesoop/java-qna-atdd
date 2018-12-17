@@ -34,7 +34,6 @@ public class UserService {
     }
 
     public User findById(User loginUser, long id) {
-        System.out.println("니미 좆또 왜 안되?");
         return userRepository.findById(id)
                 .filter(user -> user.equals(loginUser))
                 .orElseThrow(UnAuthorizedException::new);

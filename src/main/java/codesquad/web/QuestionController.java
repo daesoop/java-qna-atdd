@@ -35,10 +35,23 @@ public class QuestionController {
         return "qna/show";
     }
 
+    @GetMapping("/{id}/form")
+    public String questionUpdate(@LoginUser User user, @PathVariable long id, Model model) {
+        model.addAttribute("question", qnaService.findById(id).filter(q -> q.isOwner(user))
+                .orElseThrow(UnAuthorizedException::new));
+        return "qna/updateForm";
+    }
+
     @PostMapping("")
-    public String createQuestin(@LoginUser User user, String title, String contents) {
+    public String createQuestion(@LoginUser User user, String title, String contents) {
         qnaService.create(user, new Question(title, contents));
         return "redirect:/";
+    }
+
+    @PutMapping("/{id}")
+    public String updateQuestion(@LoginUser User loginUser, @PathVariable long id, Question target) {
+        qnaService.update(loginUser, id, target);
+        return String.format("redirect:/questions/%d", id);
     }
 
     @DeleteMapping("/{id}")
