@@ -8,9 +8,6 @@ import support.test.BaseTest;
 import javax.validation.constraints.Null;
 
 public class QuestionTest extends BaseTest {
-    public static final User JAVAJIGI = new User(1L, "javajigi", "password", "name", "javajigi@slipp.net");
-    public static final User SANJIGI = new User(2L, "sanjigi", "password", "name", "sanjigi@slipp.net");
-
     public static final Question QUESTION_FIRST = new Question("first question title", "content");
     public static final Question QUESTION_SECOND = new Question("second question title", "new content");
 
@@ -18,8 +15,8 @@ public class QuestionTest extends BaseTest {
     public void setUp() throws Exception {
         QUESTION_FIRST.setId(1);
         QUESTION_SECOND.setId(2);
-        QUESTION_FIRST.writeBy(JAVAJIGI);
-        QUESTION_SECOND.writeBy(JAVAJIGI);
+        QUESTION_FIRST.writeBy(UserTest.LOGIN_USER);
+        QUESTION_SECOND.writeBy(UserTest.LOGIN_USER);
     }
 
     @Test()
@@ -31,7 +28,7 @@ public class QuestionTest extends BaseTest {
     @Test
     public void 질문생성_아이디_같을때() {
         Question question = QUESTION_FIRST;
-        User javajigi = JAVAJIGI;
+        User javajigi = UserTest.LOGIN_USER;
         softly.assertThat(question.isOwner(javajigi)).isTrue();
     }
 
@@ -39,7 +36,7 @@ public class QuestionTest extends BaseTest {
     public void 업데이트_로그인() {
         Question question = QUESTION_FIRST;
         Question newQuestion = QUESTION_SECOND;
-        User javajigi = JAVAJIGI;
+        User javajigi = UserTest.LOGIN_USER;
         question.update(newQuestion, javajigi);
         softly.assertThat(question.getContents()).isEqualTo(newQuestion.getContents());
     }
@@ -48,7 +45,7 @@ public class QuestionTest extends BaseTest {
     public void 업데이트_다른사람일때() {
         Question question = QUESTION_FIRST;
         Question newQuestion = QUESTION_SECOND;
-        User another = SANJIGI;
+        User another = UserTest.OTHER_USER;
         question.update(newQuestion, another);
     }
 

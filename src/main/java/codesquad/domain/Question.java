@@ -1,7 +1,6 @@
 package codesquad.domain;
 
 import codesquad.CannotDeleteException;
-import codesquad.UnAuthenticationException;
 import codesquad.UnAuthorizedException;
 import org.hibernate.annotations.Where;
 import support.domain.AbstractEntity;
@@ -94,11 +93,16 @@ public class Question extends AbstractEntity implements UrlGeneratable {
         return writer.equals(loginUser);
     }
 
-    public boolean isDeleted(User loginUser) {
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void delete(User loginUser) {
         if (!loginUser.equals(this.writer)) {
-            throw new CannotDeleteException("you can't delete the other's information.");
+            throw new CannotDeleteException("you can't delete the other's information.")
         }
-        return true;
+        List<DeleteHistory> answers = Answer.deleteAnswer();
+        this.deleted = true;
     }
 
     public void update(Question updateQuestion, User loginUser) throws UnAuthorizedException {
