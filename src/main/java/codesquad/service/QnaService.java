@@ -84,7 +84,7 @@ public class QnaService {
     public void deleteAnswer(User loginUser, long id) {
         Answer answer = answerRepository.findById(id).filter(answer1 -> answer1.isOwner(loginUser))
                 .orElseThrow(UnAuthorizedException::new);
-        answer.deleteAnswer(loginUser);
+        answer.delete(loginUser);
     }
 
 }

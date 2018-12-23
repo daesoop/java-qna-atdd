@@ -97,12 +97,14 @@ public class Question extends AbstractEntity implements UrlGeneratable {
         return deleted;
     }
 
-    public void delete(User loginUser) {
+    public List<DeleteHistory> delete(User loginUser) {
         if (!loginUser.equals(this.writer)) {
-            throw new CannotDeleteException("you can't delete the other's information.")
+            throw new CannotDeleteException("you can't delete the other's information.");
         }
-        List<DeleteHistory> answers = Answer.deleteAnswer();
+        List<DeleteHistory> histories = Answer.deleteAnswers(this.answers, loginUser);
         this.deleted = true;
+        histories.add(new DeleteHistory(ContentType.QUESTION, getId(), loginUser));
+        return histories;
     }
 
     public void update(Question updateQuestion, User loginUser) throws UnAuthorizedException {

@@ -86,14 +86,14 @@ public class Answer extends AbstractEntity implements UrlGeneratable {
             throw new CannotDeleteException("you can't delete other's information.");
         }
         this.deleted = true;
-        return new DeleteHistory(ContentType.ANSWER, getId(),loginUser);
+        return new DeleteHistory(ContentType.ANSWER, getId(), loginUser);
     }
 
-    public  List<DeleteHistory> deleteAnswer(List<Answer> answers ,User loginUser) {
-        DeleteHistory answer = delete(loginUser);
+
+    public static List<DeleteHistory> deleteAnswers(List<Answer> answers, User loginUser) {
         List<DeleteHistory> infoAnswers = new ArrayList<>();
-        for (int i = 0; i < answers.size(); i++) {
-            infoAnswers.add(answer);
+        for (Answer answer1 : answers) {
+            infoAnswers.add(answer1.delete(loginUser));
         }
         return infoAnswers;
     }

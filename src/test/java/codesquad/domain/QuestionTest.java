@@ -1,5 +1,6 @@
 package codesquad.domain;
 
+import codesquad.CannotDeleteException;
 import codesquad.UnAuthorizedException;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,5 +55,24 @@ public class QuestionTest extends BaseTest {
         Question question = QUESTION_FIRST;
         Question updateQuestion = QUESTION_SECOND;
         question.update(updateQuestion, null);
+    }
+
+    @Test
+    public void 삭제_로그인됨() {
+        Question question = QUESTION_FIRST;
+        question.delete(UserTest.LOGIN_USER);
+        softly.assertThat(question.isDeleted()).isTrue();
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void 삭제_로그인안됨() {
+        Question question = QUESTION_FIRST;
+        question.delete(null);
+    }
+
+    @Test(expected = CannotDeleteException.class)
+    public void 삭제_다른유저() {
+        Question question = QUESTION_FIRST;
+        question.delete(UserTest.OTHER_USER);
     }
 }
